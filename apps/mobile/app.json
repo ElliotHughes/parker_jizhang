@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Parker 记账",
+    "slug": "parker-jizhang",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#22c55e"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#22c55e"
+      },
+      "package": "com.parker.jizhang"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "parker-jizhang"
+  }
+}

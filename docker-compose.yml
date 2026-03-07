@@ -1,0 +1,56 @@
+services:
+
+  # ── 后端 API (Express + SQLite) ──────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    container_name: jizhang-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_PATH: /data/jizhang/jizhang.db
+    volumes:
+      - jizhang-data:/data/jizhang   # SQLite 数据持久化
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - jizhang-net
+
+  # ── Caddy（HTTPS + 反向代理 + 静态文件）──────────────────────
+  caddy:
+    build:
+      context: .
+      dockerfile: docker/caddy/Dockerfile   # 把 web 静态文件打入 Caddy 镜像
+    container_name: jizhang-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3 (QUIC)
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - caddy-data:/data      # 证书持久化
+      - caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - jizhang-net
+
+volumes:
+  jizhang-data:   # SQLite 数据库
+  caddy-data:     # Caddy 证书
+  caddy-config:   # Caddy 配置缓存
+
+networks:
+  jizhang-net:
+    driver: bridge
