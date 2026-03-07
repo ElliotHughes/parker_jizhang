@@ -1,5 +1,5 @@
-# 第一阶段：构建 React Web
-FROM node:20-alpine AS web-builder
+# 第一阶段：构建 React
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -24,10 +24,10 @@ ENV VITE_API_URL=${VITE_API_URL}
 
 RUN pnpm --filter web build
 
-# 第二阶段：Caddy 镜像，内嵌静态文件
-FROM caddy:2-alpine
+# 第二阶段：nginx 托管静态文件
+FROM nginx:1.27-alpine
 
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=web-builder /app/apps/web/dist /srv/web
+COPY docker/web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
-EXPOSE 80 443
+EXPOSE 80

@@ -1,0 +1,22 @@
+# 将此内容合并到宿主机的 Caddyfile 中
+# 把 jizhang.example.com 换成你的实际域名
+
+jizhang.example.com {
+
+    encode gzip zstd
+
+    # /api/* 反代到后端容器
+    handle /api/* {
+        reverse_proxy 127.0.0.1:3001
+    }
+
+    # 其余请求反代到 nginx 静态文件容器
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+
+    log {
+        output file /var/log/caddy/jizhang.log
+        format console
+    }
+}
