@@ -39,4 +39,4 @@ volumes:
 networks:
   caddy-net:
     external: true
-    name: xray-caddy_default
+    name: xray_caddy_default
