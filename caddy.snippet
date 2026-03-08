@@ -7,12 +7,12 @@ jz.99988800.xyz {
 
     # /api/* 反代到后端容器
     handle /api/* {
-        reverse_proxy 127.0.0.1:3001
+        reverse_proxy jizhang-api:3001
     }
 
     # 其余请求反代到 nginx 静态文件容器
     handle {
-        reverse_proxy 127.0.0.1:3000
+        reverse_proxy jizhang-web:3000
     }
 
     log {
