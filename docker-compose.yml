@@ -29,8 +29,14 @@ services:
       dockerfile: docker/web/Dockerfile
     container_name: jizhang-web
     restart: unless-stopped
-    ports:
-      - "3000:80"
+    networks:
+      - default
+      - caddy-net
 
 volumes:
   jizhang-data:
+
+networks:
+  caddy-net:
+    external: true
+    name: xray-caddy_default
